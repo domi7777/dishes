@@ -1,5 +1,5 @@
 import './App.css'
-import {SheetsLoader} from "./components/SheetLoader.tsx";
+import {SheetsLoader} from './components/SheetLoader.tsx';
 
 
 function App() {
