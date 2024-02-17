@@ -34,6 +34,8 @@ export function SheetsLoader() {
     {dishes && <ol>
       {dishes.map((dish: string, index: number) => <li key={index}>{dish}</li>)}
     </ol>}
+    <a href="https://github.com/domi7777/dishes">code</a>
+    
   </div>
 }
 
