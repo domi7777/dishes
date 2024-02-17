@@ -20,7 +20,7 @@ export function SheetsLoader() {
     });
   }, []);
 
-  console.log({table});
+  console.log({table, dishes});
 
   return <div style={{
     display: 'flex',
