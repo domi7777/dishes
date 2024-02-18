@@ -11,6 +11,7 @@ async function loadSheet() {
 export function SheetsLoader() {
   const [table, setTable] = useState(null);
   const [dishes, setDishes] = useState([]);
+  const [filterText, setFilterText] = useState('');
 
   useEffect(() => {
     loadSheet().then((sheet) => {
@@ -22,6 +23,14 @@ export function SheetsLoader() {
 
   console.log({table, dishes});
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterText(event.target.value);
+  };
+
+  const filteredDishes = dishes.filter((text) =>
+    text.toLowerCase().includes(filterText.toLowerCase())
+  );
+
   return <div style={{
     display: 'flex',
     flexDirection: 'column',
@@ -31,8 +40,12 @@ export function SheetsLoader() {
     textAlign: 'left'
   }}>
     <h3>Les petits plats</h3>
+    <input type="text"
+      placeholder="Enter text to filter"
+      value={filterText}
+      onChange={handleInputChange} />
     {dishes && <ol>
-      {dishes.map((dish: string, index: number) => <li key={index}>{dish}</li>)}
+      {filteredDishes.map((dish: string, index: number) => <li key={index}>{dish}</li>)}
     </ol>}
     <a href="https://github.com/domi7777/dishes">code</a>
     
