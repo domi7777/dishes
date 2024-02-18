@@ -10,7 +10,7 @@ async function loadSheet() {
 
 export function SheetsLoader() {
   const [table, setTable] = useState(null);
-  const [dishes, setDishes] = useState([]);
+  const [dishes, setDishes] = useState<string[]>([]);
   const [filterText, setFilterText] = useState('');
 
   useEffect(() => {
