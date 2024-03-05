@@ -44,7 +44,7 @@ export function SheetsLoader() {
       placeholder="Enter text to filter"
       value={filterText}
       onChange={handleInputChange} />
-    {dishes && <ol>
+    {<ol>
       {filteredDishes.map((dish: string, index: number) => <li key={index}>{dish}</li>)}
     </ol>}
     <a href="https://github.com/domi7777/dishes">code</a>
