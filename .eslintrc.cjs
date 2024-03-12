@@ -17,6 +17,7 @@ module.exports = {
         quotes: ["error", "single"],
         "no-console": "off",
         "no-unused-vars": "off",
+        "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
         "@typescript-eslint/no-unused-vars": [
             "error",
             {vars: "all", args: "after-used", ignoreRestSiblings: false},

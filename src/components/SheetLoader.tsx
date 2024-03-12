@@ -1,34 +1,43 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {removeAccents} from '../utils/utils.ts';
+import {loadSheet, XlsSheet} from '../utils/XlsSheet.ts';
 
-async function loadSheet() {
-  const rep = await fetch('https://docs.google.com/spreadsheets/d/1qoO9sBU7qr8JbIJwPUruF-k27JiaQI8zFRcYi1pyMkY/gviz/tq?tqx=out:json&tq&gid=0')
-  const text = await rep.text();
-  // console.log({text});
-  const json = text.slice(47, -2)
-  return JSON.parse(json);
+const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/1qoO9sBU7qr8JbIJwPUruF-k27JiaQI8zFRcYi1pyMkY/gviz/tq?tqx=out:json&tq&gid=0';
+
+type Dish = {
+    name: string;
+    ingredients: string[];
+}
+
+function sheetToDishes(sheet: XlsSheet) {
+  return sheet.table.rows
+    .filter((row, index) => row.c[0].v && index > 0)  // first row = row title
+    .map((row) => {
+      const dish = row.c[0].v;
+      const ingredients = row.c[1]?.v?.split(', ') ?? [];
+      return {name: dish, ingredients};
+    });
 }
 
 export function SheetsLoader() {
-  const [table, setTable] = useState(null);
-  const [dishes, setDishes] = useState<string[]>([]);
+  const [dishes, setDishes] = useState<Dish[]>([]);
   const [filterText, setFilterText] = useState('');
 
   useEffect(() => {
-    loadSheet().then((sheet) => {
-      setTable(sheet.table);
-      // dish is there: table.rows[0].c[0].v
-      setDishes(sheet.table.rows.map((row: any) => row.c[0].v));
+    loadSheet(googleSheetUrl).then((sheet) => {
+      setDishes(sheetToDishes(sheet));
     });
   }, []);
 
-  console.log({table, dishes});
+  console.log({dishes});
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterText(event.target.value);
   };
 
-  const filteredDishes = dishes.filter((text) =>
-    text.toLowerCase().includes(filterText.toLowerCase())
+  const filteredDishes = dishes.filter((dish) =>
+    [dish.name, ...dish.ingredients]
+      .some((text) => removeAccents(text.toLowerCase()).includes(filterText.toLowerCase()))
   );
 
   return <div style={{
@@ -39,16 +48,21 @@ export function SheetsLoader() {
     gap: '1rem',
     textAlign: 'left'
   }}>
-    <h3>Les petits plats</h3>
     <input type="text"
-      placeholder="Enter text to filter"
+      style={{
+        padding: '0.5rem',
+        fontSize: '1.5rem'
+      }} placeholder="Enter text to filter"
       value={filterText}
-      onChange={handleInputChange} />
-    <ol>
-      {filteredDishes.map((dish: string, index: number) => <li key={index}>{dish}</li>)}
-    </ol>
+      onChange={handleSearchTextChange}
+    />
+
+    <ol>{filteredDishes.map((dish, index) =>
+      <li key={index}>
+        {dish.name} - <i>({dish.ingredients.join(', ')})</i>
+      </li>
+    )}</ol>
     <a href="https://github.com/domi7777/dishes">code</a>
-    
+
   </div>
 }
-
