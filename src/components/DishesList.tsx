@@ -1,36 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {removeAccents} from '../utils/utils.ts';
-import {loadSheet, XlsSheet} from '../utils/XlsSheet.ts';
+import {Dish} from '../model/Dish.ts';
 
-const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/1qoO9sBU7qr8JbIJwPUruF-k27JiaQI8zFRcYi1pyMkY/gviz/tq?tqx=out:json&tq&gid=0';
-
-type Dish = {
-    name: string;
-    ingredients: string[];
-}
-
-function sheetToDishes(sheet: XlsSheet) {
-  return sheet.table.rows
-    .filter((row, index) => row.c[0].v && index > 0)  // first row = row title
-    .map((row) => {
-      const dish = row.c[0].v;
-      const ingredients = row.c[1]?.v?.split(', ') ?? [];
-      return {name: dish, ingredients};
-    });
-}
-
-export function SheetsLoader() {
-  const [dishes, setDishes] = useState<Dish[]>([]);
+export function DishesList({dishes}: {dishes: Dish[]}) {
   const [filterText, setFilterText] = useState('');
-
-  useEffect(() => {
-    loadSheet(googleSheetUrl).then((sheet) => {
-      setDishes(sheetToDishes(sheet));
-    });
-  }, []);
-
-  console.log({dishes});
-
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterText(event.target.value);
   };
