@@ -9,6 +9,24 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      manifest: {
+        name: 'Dish List App',
+        short_name: 'DishList',
+        description: 'A Progressive Web App to list and manage your favorite dishes.',
+        theme_color: '#000000',
+        icons: [
+          {
+            src: './icons/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: './icons/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
       workbox: {
         globPatterns: ['**/*.{js,ts,tsx,css,html,ico,png,svg}'],
         runtimeCaching: [
