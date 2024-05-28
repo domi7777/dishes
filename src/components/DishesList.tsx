@@ -24,8 +24,11 @@ export function DishesList({dishes}: {dishes: Dish[]}) {
     <input type="text"
       style={{
         padding: '0.5rem',
-        fontSize: '1.5rem'
-      }} placeholder="Enter text to filter"
+        fontSize: '1.5rem',
+        position: 'sticky',
+        top: 0
+      }}
+      placeholder="Enter dish names or ingredients to filter"
       value={filterText}
       onChange={handleSearchTextChange}
     />
