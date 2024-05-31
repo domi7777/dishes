@@ -18,7 +18,7 @@ function App() {
       {
         dishes ?  
         <DishesList dishes={dishes} /> : 
-        <ing src="./icons/pwa-512x512.png" alt="loading" />
+        <img src="./icons/pwa-512x512.png" alt="loading" />
       }
     </>
   )
