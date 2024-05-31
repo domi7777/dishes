@@ -15,7 +15,11 @@ function App() {
 
   return (
     <>
-      {dishes ?  <DishesList dishes={dishes} /> : 'Loading...'}
+      {
+        dishes ?  
+        <DishesList dishes={dishes} /> : 
+        <ing src="./icons/pwa-512x512.png" alt="loading" />
+      }
     </>
   )
 }
