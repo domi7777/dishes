@@ -41,7 +41,6 @@ export function DishesList({dishes}: {dishes: Dish[]}) {
         ) : null}
       </li>
     )}</ol>
-    <a href="https://github.com/domi7777/dishes">code</a>
 
   </div>
 }
