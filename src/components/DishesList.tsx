@@ -36,9 +36,9 @@ export function DishesList({dishes}: {dishes: Dish[]}) {
     <ol>{filteredDishes.map((dish, index) =>
       <li key={index}>
         {dish.name}
-        {dish.ingredients?.length && (
+        {dish.ingredients?.length ? (
           <i> ({dish.ingredients.join(', ')})</i>
-        )}
+        ) : null}
       </li>
     )}</ol>
     <a href="https://github.com/domi7777/dishes">code</a>
