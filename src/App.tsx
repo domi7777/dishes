@@ -16,9 +16,9 @@ function App() {
   return (
     <>
       {
-        dishes ?  
-        <DishesList dishes={dishes} /> : 
-        <img src="./icons/pwa-512x512.png" alt="loading" />
+        dishes ?
+          <DishesList dishes={dishes} /> :
+          <img src="./icons/pwa-512x512.png" alt="loading" />
       }
     </>
   )
