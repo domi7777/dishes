@@ -2,7 +2,29 @@ import React, {useState} from 'react';
 import {removeAccents} from '../utils/utils.ts';
 import {Dish} from '../model/Dish.ts';
 
-export function DishesList({dishes}: {dishes: Dish[]}) {
+const highlightText = (text: string, wordToHighlight: string) => {
+  if (wordToHighlight.length < 3) {
+    return text;
+  }
+
+  const regex = new RegExp(`(${wordToHighlight})`, 'gi');
+  const parts = text.split(regex);
+
+  return parts.map((part, index) =>
+    wordToHighlight.includes(part.toLowerCase()) ? (
+      <span key={index} style={{
+        textDecoration: 'underline',
+        textDecorationColor: 'yellow',
+      }}>
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+};
+
+export function DishesList({dishes}: { dishes: Dish[] }) {
   const [filterText, setFilterText] = useState('');
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterText(event.target.value);
@@ -35,9 +57,9 @@ export function DishesList({dishes}: {dishes: Dish[]}) {
 
     <ol>{filteredDishes.map((dish, index) =>
       <li key={index}>
-        {dish.name}
+        {highlightText(dish.name, filterText)}
         {dish.ingredients?.length ? (
-          <i> ({dish.ingredients.join(', ')})</i>
+          <i> ({highlightText(dish.ingredients.join(', '), filterText)})</i>
         ) : null}
       </li>
     )}</ol>
