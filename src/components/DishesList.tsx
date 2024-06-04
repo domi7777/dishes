@@ -11,7 +11,7 @@ const highlightText = (text: string, wordToHighlight: string) => {
   const parts = text.split(regex);
 
   return parts.map((part, index) =>
-    wordToHighlight.includes(part.toLowerCase()) ? (
+    wordToHighlight.toLowerCase().includes(part.toLowerCase()) ? (
       <span key={index} style={{
         textDecoration: 'underline',
         textDecorationColor: 'yellow',
