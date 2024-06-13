@@ -32,8 +32,13 @@ export function DishesList({dishes}: { dishes: Dish[] }) {
 
   const filteredDishes = dishes.filter((dish) =>
     [dish.name, ...dish.ingredients]
-      .some((text) => removeAccents(text.toLowerCase()).includes(filterText.toLowerCase()))
+      .some((text) => removeAccents(text.toLowerCase()).includes(removeAccents(filterText.toLowerCase())))
   );
+
+  function setRandomDish() {
+    const randomIndex = Math.floor(Math.random() * dishes.length);
+    setFilterText(dishes[randomIndex].name);
+  }
 
   return <div style={{
     display: 'flex',
@@ -43,17 +48,23 @@ export function DishesList({dishes}: { dishes: Dish[] }) {
     gap: '1rem',
     textAlign: 'left'
   }}>
-    <input type="text"
-      style={{
-        padding: '0.5rem',
-        fontSize: '1.5rem',
-        position: 'sticky',
-        top: 0
-      }}
-      placeholder="Enter dish names or ingredients to filter"
-      value={filterText}
-      onChange={handleSearchTextChange}
-    />
+    <div style={{
+      display: 'flex',
+      width: '100%',
+      flexDirection: 'row',
+      padding: '0.5rem',
+      fontSize: '1.5rem',
+      position: 'sticky',
+      top: 0
+    }}>
+      <input type="text"
+        placeholder="Enter dish names or ingredients to filter"
+        value={filterText}
+        onChange={handleSearchTextChange}
+      />
+      <button style={{width: 50, height: 50}} onClick={() => setFilterText('')}>✖️</button>
+      <button style={{width: 50, height: 50}} onClick={() => setRandomDish()}>🎲</button>
+    </div>
 
     <ol>{filteredDishes.map((dish, index) =>
       <li key={index}>
