@@ -32,7 +32,9 @@ export function DishesList({dishes}: { dishes: Dish[] }) {
 
   const filteredDishes = dishes.filter((dish) =>
     [dish.name, ...dish.ingredients]
-      .some((text) => removeAccents(text.toLowerCase()).includes(removeAccents(filterText.toLowerCase())))
+      .some((text) => removeAccents(text.toLowerCase()).includes(
+        removeAccents(filterText.toLowerCase()))
+      )
   );
 
   function setRandomDish() {
