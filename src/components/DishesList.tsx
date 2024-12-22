@@ -14,7 +14,7 @@ const highlightText = (text: string, wordToHighlight: string) => {
     wordToHighlight.toLowerCase().includes(part.toLowerCase()) ? (
       <span key={index} style={{
         textDecoration: 'none',
-        textDecorationColor: 'green',
+        color: 'green',
       }}>
         {part}
       </span>
