@@ -71,15 +71,13 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
         </button>
       </div>
 
-      <ol className="grid gap-4">
+      <ul className="grid gap-4">
         {filteredDishes.map((dish, index) => (
           <li
             key={index}
             className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow border border-gray-200 dark:border-zinc-700"
           >
-            <p className="text-lg font-semibold">
-              {index + 1}. {highlightText(dish.name, filterText)}
-            </p>
+            <p className="text-lg font-semibold">{highlightText(dish.name, filterText)}</p>
 
             {dish.ingredients?.length > 0 && (
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 italic">
@@ -103,7 +101,7 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
             )}
           </li>
         ))}
-      </ol>
+      </ul>
     </>
   );
 }
