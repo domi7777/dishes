@@ -2,6 +2,7 @@ import {DishesList} from './components/DishesList.tsx';
 import {useEffect, useState} from 'react';
 import {Dish, sheetToDishes} from './model/Dish.ts';
 import {loadSheet} from './model/Sheet.ts';
+import './App.css';
 
 const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/1qoO9sBU7qr8JbIJwPUruF-k27JiaQI8zFRcYi1pyMkY/gviz/tq?tqx=out:json&tq&gid=0';
 
