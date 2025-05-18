@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { removeAccents } from '../utils/utils.ts';
 import { Dish } from '../model/Dish.ts';
 
-const highlightText = (text: string, wordToHighlight: string) => {
-  if (wordToHighlight.length < 3) {
-    return text;
-  }
+const normalize = (text: string) => removeAccents(text.toLowerCase());
 
-  const regex = new RegExp(`(${wordToHighlight})`, 'gi');
-  const parts = text.split(regex);
+const highlightText = (text: string, query: string) => {
+  if (query.length < 3) return text;
 
-  return parts.map((part, index) =>
-    wordToHighlight.toLowerCase().includes(part.toLowerCase()) ? (
-      <span key={index} className="text-green-600 font-semibold">{part}</span>
+  const regex = new RegExp(`(${query})`, 'gi');
+  return text.split(regex).map((part, index) =>
+    query.toLowerCase().includes(part.toLowerCase()) ? (
+      <span key={index} className="text-green-600 font-semibold">
+        {part}
+      </span>
     ) : (
       part
     )
@@ -21,22 +21,29 @@ const highlightText = (text: string, wordToHighlight: string) => {
 
 export function DishesList({ dishes }: { dishes: Dish[] }) {
   const [filterText, setFilterText] = useState('');
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterText(event.target.value);
-  };
+  const normalizedFilter = normalize(filterText);
 
   const filteredDishes = dishes.filter((dish) =>
-    [dish.name, ...dish.ingredients]
-      .some((text) => removeAccents(text.toLowerCase()).includes(
-        removeAccents(filterText.toLowerCase()))
+    [dish.name, ...dish.ingredients, dish.recipe]
+      .filter((text): text is string => typeof text === 'string')
+      .some((text) =>
+        normalize(text).includes(normalizedFilter)
       )
   );
-  
-  function setRandomDish() {
-    const randomIndex = Math.floor(Math.random() * dishes.length);
-    setFilterText(dishes[randomIndex].name);
-  }
+
+  const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setFilterText(e.target.value);
+
+  const setRandomDish = () => {
+    const random = dishes[Math.floor(Math.random() * dishes.length)];
+    setFilterText(random.name);
+  };
+
+  const toggleRecipe = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
     <>
@@ -45,7 +52,7 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
       <div className="flex gap-2 mb-6 sticky top-0 bg-gray-50 dark:bg-zinc-900 py-2 z-10">
         <input
           type="text"
-          placeholder="Rechercher un plat ou ingrédient…"
+          placeholder="Rechercher un plat, ingrédient ou recette…"
           value={filterText}
           onChange={handleSearchTextChange}
           className="flex-grow p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-zinc-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -73,9 +80,25 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
             <p className="text-lg font-semibold">
               {index + 1}. {highlightText(dish.name, filterText)}
             </p>
+
             {dish.ingredients?.length > 0 && (
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 italic">
                 ({highlightText(dish.ingredients.join(', '), filterText)})
+              </p>
+            )}
+
+            {dish.recipe && (
+              <button
+                onClick={() => toggleRecipe(index)}
+                className="mt-2 text-sm text-indigo-600 dark:text-indigo-300 hover:underline"
+              >
+                {openIndex === index ? 'Masquer la recette' : 'Voir la recette'}
+              </button>
+            )}
+
+            {openIndex === index && dish.recipe && (
+              <p className="mt-2 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">
+                {highlightText(dish.recipe, filterText)}
               </p>
             )}
           </li>
