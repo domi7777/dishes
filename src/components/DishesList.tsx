@@ -22,6 +22,7 @@ const highlightText = (text: string, query: string) => {
 export function DishesList({ dishes }: { dishes: Dish[] }) {
   const [filterText, setFilterText] = useState('');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const normalizedFilter = normalize(filterText);
 
@@ -33,8 +34,26 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
       )
   );
 
-  const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const availableIngredients = Array.from(new Set(
+    dishes.flatMap((dish) => dish.ingredients.map((ingredient) => ingredient.charAt(0).toUpperCase() + ingredient.slice(1)))
+  ))
+    .reduce((acc, ingredient) => {
+      const singular = ingredient.endsWith('s') ? ingredient.slice(0, -1) : null;
+      if (singular && acc.includes(singular)) {
+        return acc;
+      }
+      return [...acc, ingredient];
+    }, [] as string[])
+    .sort();
+
+  const handleIngredientFilter = (ingredient: string) => {
+    setFilterText(ingredient);
+    setIsDropdownOpen(false); // Close the dropdown when an ingredient is selected
+  };
+
+  const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilterText(e.target.value);
+  };
 
   const setRandomDish = () => {
     const random = dishes[Math.floor(Math.random() * dishes.length)];
@@ -45,11 +64,36 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <>
       <h1 className="text-3xl font-bold mb-6 text-center">🍽️ Liste des plats</h1>
 
       <div className="flex gap-2 mb-6 sticky top-0 bg-gray-50 dark:bg-zinc-900 py-2 z-10">
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="w-12 h-12 rounded-md bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-lg"
+          >
+            🥗
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute left-0 mt-2 w-48 max-h-60 overflow-y-auto bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-10">
+              {availableIngredients.map((ingredient, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleIngredientFilter(ingredient)}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
+                >
+                  {ingredient}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <input
           type="text"
           placeholder="Rechercher un plat, ingrédient ou recette…"
