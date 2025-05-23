@@ -59,9 +59,12 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
         />
         <button
           onClick={() => setFilterText('')}
-          className="w-12 h-12 rounded-md bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-lg"
+          className="w-12 h-12 rounded-md bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-lg flex items-center justify-center"
+          aria-label="Effacer la recherche"
         >
-          ✖️
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="white" aria-hidden="true">
+            <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12l-4.89 4.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/>
+          </svg>
         </button>
         <button
           onClick={setRandomDish}
