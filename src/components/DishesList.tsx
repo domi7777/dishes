@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { removeAccents } from '../utils/utils.ts';
 import { Dish } from '../model/Dish.ts';
+import { IngredientDropdown } from './IngredientDropdown';
 
 const normalize = (text: string) => removeAccents(text.toLowerCase());
 
@@ -73,27 +74,12 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
       <h1 className="text-3xl font-bold mb-6 text-center">🍽️ Liste des plats</h1>
 
       <div className="flex gap-2 mb-6 sticky top-0 bg-gray-50 dark:bg-zinc-900 py-2 z-10">
-        <div className="relative">
-          <button
-            onClick={toggleDropdown}
-            className="w-12 h-12 rounded-md bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-lg"
-          >
-            🥗
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute left-0 mt-2 w-48 max-h-60 overflow-y-auto bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-10">
-              {availableIngredients.map((ingredient, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleIngredientFilter(ingredient)}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
-                >
-                  {ingredient}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <IngredientDropdown
+          ingredients={availableIngredients}
+          isOpen={isDropdownOpen}
+          onSelect={handleIngredientFilter}
+          onToggle={toggleDropdown}
+        />
         <input
           type="text"
           placeholder="Rechercher un plat, ingrédient ou recette…"
