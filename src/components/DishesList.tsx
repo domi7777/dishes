@@ -83,9 +83,16 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
             <p className="text-lg font-semibold">{highlightText(dish.name, filterText)}</p>
 
             {dish.ingredients?.length > 0 && (
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 italic">
-                ({highlightText(dish.ingredients.join(', '), filterText)})
-              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {dish.ingredients.map((ingredient, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 rounded-full bg-gray-200 dark:bg-zinc-700 text-sm text-gray-800 dark:text-gray-200"
+                  >
+                    {highlightText(ingredient, filterText)}
+                  </span>
+                ))}
+              </div>
             )}
 
             {dish.recipe && (
