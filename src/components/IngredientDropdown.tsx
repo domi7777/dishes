@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface IngredientDropdownProps {
   ingredients: string[];
@@ -13,8 +13,23 @@ export const IngredientDropdown: React.FC<IngredientDropdownProps> = ({
   onSelect,
   onToggle,
 }) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        onToggle();
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onToggle]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
         className="w-12 h-12 rounded-md bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-lg"
@@ -22,7 +37,7 @@ export const IngredientDropdown: React.FC<IngredientDropdownProps> = ({
         🥗
       </button>
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-48 max-h-60 overflow-y-auto bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-10">
+        <div className="absolute left-0 mt-2 w-48 max-h-96 overflow-y-auto bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-10">
           {ingredients.map((ingredient, index) => (
             <button
               key={index}
