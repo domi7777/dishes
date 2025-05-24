@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { removeAccents } from '../utils/utils.ts';
 import { Dish } from '../model/Dish.ts';
 import { IngredientDropdown } from './IngredientDropdown';
@@ -24,6 +24,17 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
   const [filterText, setFilterText] = useState('');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('favoriteDishes') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('favoriteDishes', JSON.stringify(favorites));
+  }, [favorites]);
 
   const normalizedFilter = normalize(filterText);
 
@@ -34,6 +45,12 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
         normalize(text).includes(normalizedFilter)
       )
   );
+
+  // Sort: favorites first, then others
+  const sortedDishes = [
+    ...filteredDishes.filter((dish) => favorites.includes(dish.name)),
+    ...filteredDishes.filter((dish) => !favorites.includes(dish.name)),
+  ];
 
   const availableIngredients = Array.from(new Set(
     dishes.flatMap((dish) => dish.ingredients.map((ingredient) => ingredient.charAt(0).toUpperCase() + ingredient.slice(1)))
@@ -67,6 +84,14 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleFavorite = (dishName: string) => {
+    setFavorites((prev) =>
+      prev.includes(dishName)
+        ? prev.filter((name) => name !== dishName)
+        : [...prev, dishName]
+    );
   };
 
   return (
@@ -105,12 +130,20 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
       </div>
 
       <ul className="grid gap-4">
-        {filteredDishes.map((dish, index) => (
+        {sortedDishes.map((dish, index) => (
           <li
-            key={index}
-            className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow border border-gray-200 dark:border-zinc-700"
+            key={dish.name}
+            className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow border border-gray-200 dark:border-zinc-700 flex flex-col relative"
           >
-            <p className="text-lg font-semibold">{highlightText(dish.name, filterText)}</p>
+            <button
+              onClick={() => toggleFavorite(dish.name)}
+              className="absolute top-2 right-2 text-2xl focus:outline-none"
+              title={favorites.includes(dish.name) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              aria-label="Favori"
+            >
+              {favorites.includes(dish.name) ? '❤️' : '🤍'}
+            </button>
+            <p className="text-lg font-semibold pr-8">{highlightText(dish.name, filterText)}</p>
 
             {dish.ingredients?.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
