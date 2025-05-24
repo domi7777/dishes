@@ -1,24 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { removeAccents } from '../utils/utils.ts';
-import { Dish } from '../model/Dish.ts';
+import { normalize } from '../utils/normalize.ts';
+import { highlightText } from '../utils/highlightText.tsx';
+import { Dish } from '../model/Dish';
 import { IngredientDropdown } from './IngredientDropdown';
-
-const normalize = (text: string) => removeAccents(text.toLowerCase());
-
-const highlightText = (text: string, query: string) => {
-  if (query.length < 3) return text;
-
-  const regex = new RegExp(`(${query})`, 'gi');
-  return text.split(regex).map((part, index) =>
-    query.toLowerCase().includes(part.toLowerCase()) ? (
-      <span key={index} className="text-green-600 font-semibold">
-        {part}
-      </span>
-    ) : (
-      part
-    )
-  );
-};
+import { FavoriteButton } from './FavoriteButton.tsx';
+import { IngredientTag } from './IngredientTag.tsx';
+import { RecipeButton } from './RecipeButton.tsx';
 
 export function DishesList({ dishes }: { dishes: Dish[] }) {
   const [filterText, setFilterText] = useState('');
@@ -135,37 +122,30 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
             key={dish.name}
             className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow border border-gray-200 dark:border-zinc-700 flex flex-col relative"
           >
-            <button
+            <FavoriteButton
+              isFavorite={favorites.includes(dish.name)}
               onClick={() => toggleFavorite(dish.name)}
-              className="absolute top-2 right-2 text-2xl focus:outline-none"
-              title={favorites.includes(dish.name) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-              aria-label="Favori"
-            >
-              {favorites.includes(dish.name) ? '❤️' : '🤍'}
-            </button>
+            />
             <p className="text-lg font-semibold pr-8">{highlightText(dish.name, filterText)}</p>
 
             {dish.ingredients?.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {dish.ingredients.map((ingredient, i) => (
-                  <span
+                  <IngredientTag
                     key={i}
-                    className="px-3 py-1 rounded-full bg-gray-200 dark:bg-zinc-700 text-sm text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-green-200 dark:hover:bg-green-600"
+                    ingredient={ingredient}
+                    filterText={filterText}
                     onClick={() => setFilterText(ingredient)}
-                  >
-                    {highlightText(ingredient, filterText)}
-                  </span>
+                  />
                 ))}
               </div>
             )}
 
             {dish.recipe && (
-              <button
+              <RecipeButton
+                isOpen={openIndex === index}
                 onClick={() => toggleRecipe(index)}
-                className="mt-2 text-sm text-indigo-600 dark:text-indigo-300 hover:underline"
-              >
-                {openIndex === index ? 'Masquer la recette' : 'Voir la recette'}
-              </button>
+              />
             )}
 
             {openIndex === index && dish.recipe && (
