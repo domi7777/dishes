@@ -11,7 +11,11 @@ export function sheetToDishes(sheet: XlsSheet): Dish[] {
     .filter((row, index) => row.c[0].v && index > 0)  // first row = row title
     .map((row) => {
       const dish = row.c[0].v;
-      const ingredients = row.c[1]?.v?.split(', ') ?? [];
+      let ingredients = row.c[1]?.v?.split(', ') ?? [];
+      // Capitalize and sort ingredients for each dish
+      ingredients = ingredients
+        .map((ingredient: string) => ingredient.charAt(0).toUpperCase() + ingredient.slice(1))
+        .sort();
       const recipe = row.c[2]?.v;
       return {name: dish, ingredients, recipe};
     });
