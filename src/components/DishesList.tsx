@@ -150,7 +150,8 @@ export function DishesList({ dishes }: { dishes: Dish[] }) {
                 {dish.ingredients.map((ingredient, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 rounded-full bg-gray-200 dark:bg-zinc-700 text-sm text-gray-800 dark:text-gray-200"
+                    className="px-3 py-1 rounded-full bg-gray-200 dark:bg-zinc-700 text-sm text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-green-200 dark:hover:bg-green-600"
+                    onClick={() => setFilterText(ingredient)}
                   >
                     {highlightText(ingredient, filterText)}
                   </span>
