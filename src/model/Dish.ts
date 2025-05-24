@@ -18,5 +18,6 @@ export function sheetToDishes(sheet: XlsSheet): Dish[] {
         .sort();
       const recipe = row.c[2]?.v;
       return {name: dish, ingredients, recipe};
-    });
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
